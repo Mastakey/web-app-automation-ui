@@ -4,12 +4,14 @@ import "./App.css";
 
 //Components
 import Navbar from "./components/Navbar";
+import Breadcrumbs from "./components/Breadcrumbs";
 
 //Pages
 import home from "./pages/home";
-import app from "./pages/app";
-import appview from "./pages/appview";
-import appedit from "./pages/appedit";
+import apps from "./pages/app/apps";
+import appview from "./pages/app/appview";
+import appedit from "./pages/app/appedit";
+import objview from "./pages/object/objview";
 import login from "./pages/login";
 
 //Redux
@@ -48,11 +50,13 @@ function App() {
         <Router>
           <Navbar />
           <div className="container">
+            <Breadcrumbs />
             <Switch>
               <Route exact path="/" component={home} />
-              <Route exact path="/app" component={app} />
+              <Route exact path="/app" component={apps} />
               <Route exact path="/app/:id" component={appview} />
               <Route exact path="/app/edit/:id" component={appedit} />
+              <Route exact path="/obj/:id" component={objview} />
               <Route exact path="/login" component={login} />
             </Switch>
           </div>

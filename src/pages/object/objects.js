@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getFieldsByApp, createField } from "../redux/actions/fieldActions";
-import { Link } from "react-router-dom";
-import SimpleTable from "../components/SimpleTable";
-import CreateField from "../components/CreateField";
+import { getObjectsByApp, createObject } from "../../redux/actions/objActions";
+import SimpleTable from "../../components/SimpleTable";
+
+import CreateObj from "../../components/object/CreateObj";
 
 //Material UI
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -14,8 +14,6 @@ import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 
 //Icons
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
 
 const styles = {
@@ -27,7 +25,7 @@ const styles = {
   }
 };
 
-class AppFields extends Component {
+class AppObjects extends Component {
   constructor() {
     super();
     this.state = {
@@ -36,7 +34,7 @@ class AppFields extends Component {
   }
   async componentDidMount() {
     const id = this.props.appId;
-    await this.props.getFieldsByApp(id);
+    await this.props.getObjectsByApp(id);
   }
   handleAddField() {
     this.setState({
@@ -51,28 +49,28 @@ class AppFields extends Component {
     });
   }
   render() {
-    const classes = this.props.classes;
-    const fields = this.props.field.fields;
+    const objects = this.props.obj.objects;
     let headers = [];
-    if (fields.length > 0) {
-      headers = Object.keys(fields[0]);
+    if (objects.length > 0) {
+      headers = Object.keys(objects[0]);
     }
+    const classes = this.props.classes;
     return (
       <Grid item xs={12}>
         <Typography variant="h4" component="h4">
-          Fields
+          Objects
         </Typography>
         <Paper className={classes.paper}>
-          <SimpleTable data={fields} headers={headers} reference="field" />
+          <SimpleTable data={objects} headers={headers} reference="obj" />
           {this.state.createFormEnabled ? (
-            <CreateField
-              createField={this.props.createField}
+            <CreateObj
+              createObject={this.props.createObject}
               appId={this.props.appId}
               disableCreateForm={this.disableCreateForm.bind(this)}
             />
           ) : (
             <Fab size="small" color="primary" className={classes.fab}>
-              <AddIcon onClick={this.handleAddField.bind(this)}/>
+              <AddIcon onClick={this.handleAddField.bind(this)} />
             </Fab>
           )}
         </Paper>
@@ -81,16 +79,14 @@ class AppFields extends Component {
   }
 }
 
-AppFields.propTypes = {
-  getFieldsByApp: PropTypes.func.isRequired,
-  createField: PropTypes.func.isRequired,
-  field: PropTypes.object.isRequired
+AppObjects.propTypes = {
+  obj: PropTypes.object.isRequired,
+  getObjectsByApp: PropTypes.func.isRequired,
+  createObject: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  field: state.field
-});
+const mapStateToProps = state => ({ obj: state.obj });
 
-export default connect(mapStateToProps, { getFieldsByApp, createField })(
-  withStyles(styles)(AppFields)
+export default connect(mapStateToProps, { getObjectsByApp, createObject })(
+  withStyles(styles)(AppObjects)
 );

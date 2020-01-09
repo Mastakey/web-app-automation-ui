@@ -3,8 +3,8 @@ import {
   CREATE_CODE,
   READ_CODE_APP,
   LOADING_UI,
-  CLEAR_ERRORS,
-  SET_ERRORS
+  SET_ERRORS,
+  DELETE_CODE
 } from "../types";
 import axios from "axios";
 
@@ -22,17 +22,51 @@ export const getCodeByApp = id => async dispatch => {
   }
 };
 
-export const createCode = data => async dispatch => {
+export const getCodeByObj = id => async dispatch => {
   dispatch({ type: LOADING_UI });
   try {
-    const code = await axios.post("/code", {
+    const codes = await axios.get("/obj/" + id + "/code");
+    dispatch({ type: READ_CODE_APP, payload: codes.data });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: SET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
+
+export const createCode = data => async dispatch => {
+  dispatch({ type: LOADING_UI });
+  let codeUrl = '';
+  if (data.type === 'functions'){
+    codeUrl = '/functions'
+  }
+  try {
+    const code = await axios.post(`/code${codeUrl}`, {
       name: data.name,
       description: data.description,
       type: data.type,
-      appId: data.appId
+      appId: data.appId,
+      objId: data.objId
     });
     console.log(code);
     dispatch({ type: CREATE_CODE, payload: code.data });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: SET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
+
+export const deleteCode = (id) => async dispatch => {
+  dispatch({ type: LOADING_UI });
+  try {
+    const code = await axios.delete("/code/" + id);
+    console.log(code);
+    dispatch({ type: DELETE_CODE, payload: code.data });
   } catch (err) {
     console.log(err);
     dispatch({

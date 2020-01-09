@@ -28,6 +28,7 @@ export const getApp = (id) => async dispatch => {
   try {
     const app = await axios.get("/app/"+id);
     dispatch({ type: READ_APP, payload: app.data });
+    return app;
   } catch (err) {
     dispatch({
       type: SET_ERRORS,
@@ -41,7 +42,9 @@ export const createApp = (data) => async dispatch => {
   try {
     const app = await axios.post("/app", {
       name: data.name,
-      description: data.description
+      description: data.description,
+      apIUrl: '',
+      databaseURL: ''
     });
     console.log(app);
     dispatch({ type: CREATE_APP, payload: app.data });

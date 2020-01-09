@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getCodeByApp } from "../redux/actions/codeActions";
+import { getCodeByApp, deleteCode } from "../../redux/actions/codeActions";
+import ViewCode from "../../components/code/ViewCode";
 
 //Material UI
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -21,6 +22,9 @@ const styles = {
 };
 
 class AppCode extends Component {
+  async deleteCode(id) {
+    await this.props.deleteCode(id);
+  }
   async componentDidMount() {
     const id = this.props.appId;
     await this.props.getCodeByApp(id);
@@ -32,10 +36,9 @@ class AppCode extends Component {
     return (
       <Grid item xs={12}>
         <Typography variant="h4" component="h4">
-          UI Code
+          Code
         </Typography>
         <Paper className={classes.paper}>
-
           {codes &&
             codes.map(code => {
               return (
@@ -50,7 +53,10 @@ class AppCode extends Component {
                     </Typography>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
-                      <pre>{code.code}</pre>
+                    <ViewCode
+                      code={code.code}
+                      deleteCode={this.deleteCode.bind(this, code.id)}
+                    />
                   </ExpansionPanelDetails>
                 </ExpansionPanel>
               );
@@ -61,12 +67,16 @@ class AppCode extends Component {
   }
 }
 
-AppCode.propTypes = {};
+AppCode.propTypes = {
+  code: PropTypes.object.isRequired,
+  getCodeByApp: PropTypes.func.isRequired,
+  deleteCode: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
   code: state.code
 });
 
-export default connect(mapStateToProps, { getCodeByApp })(
+export default connect(mapStateToProps, { getCodeByApp, deleteCode })(
   withStyles(styles)(AppCode)
 );

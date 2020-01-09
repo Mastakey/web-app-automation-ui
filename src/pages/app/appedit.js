@@ -1,8 +1,7 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { editApp, getApp } from "../redux/actions/appActions";
-
+import { editApp, getApp } from "../../redux/actions/appActions";
 
 //Material UI
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -17,16 +16,23 @@ class AppEdit extends Component {
     super();
     this.state = {
       name: "",
-      description: ""
+      description: "",
+      apiUrl: "",
+      databaseURL: ""
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
 
   async componentDidMount() {
     const id = this.props.match.params.id;
     await this.props.getApp(id);
+    console.log(this.props);
     this.setState({
       name: this.props.app.app.name,
-      description: this.props.app.app.description
+      description: this.props.app.app.description,
+      apiUrl: this.props.app.app.apiUrl,
+      databaseURL: this.props.app.app.databaseURL
     });
   }
   handleChange = event => {
@@ -38,7 +44,9 @@ class AppEdit extends Component {
     //console.log(this.state);
     const data = {
       name: this.state.name,
-      description: this.state.description
+      description: this.state.description,
+      apiUrl: this.state.apiUrl,
+      databaseURL: this.state.databaseURL
     };
     //console.log(this.props);
     await this.props.editApp(
@@ -71,7 +79,26 @@ class AppEdit extends Component {
             fullWidth
           />
         </Grid>
-
+        <Grid item xs={12}>
+          <TextField
+            name="apiUrl"
+            label="API URL"
+            variant="outlined"
+            value={this.state.apiUrl}
+            onChange={this.handleChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="databaseURL"
+            label="Database URL"
+            variant="outlined"
+            value={this.state.databaseURL}
+            onChange={this.handleChange}
+            fullWidth
+          />
+        </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" onClick={this.handleSave}>
             Save
@@ -82,7 +109,11 @@ class AppEdit extends Component {
   }
 }
 
-AppEdit.propTypes = {};
+AppEdit.propTypes = {
+  app: PropTypes.object.isRequired,
+  editApp: PropTypes.func.isRequired,
+  getApp: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
   app: state.app

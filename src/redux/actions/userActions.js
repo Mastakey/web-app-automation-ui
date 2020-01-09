@@ -20,6 +20,7 @@ export const loginUser = (userData, history) => dispatch => {
       history.push("/");
     })
     .catch(err => {
+      console.log(err);
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data

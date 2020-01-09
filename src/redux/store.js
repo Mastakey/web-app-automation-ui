@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import appReducer from "./reducers/appReducer";
 import fieldReducer from "./reducers/fieldReducer";
+import objReducer from "./reducers/objReducer";
 import userReducer from "./reducers/userReducer";
 import uiReducer from "./reducers/uiReducer";
 import codeReducer from "./reducers/codeReducer";
@@ -13,6 +14,7 @@ const middleware = [thunk];
 const reducers = combineReducers({
   user: userReducer,
   app: appReducer,
+  obj: objReducer,
   field: fieldReducer,
   code: codeReducer,
   UI: uiReducer

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -18,8 +18,7 @@ class SimpleTable extends Component {
   createHeaders(headers) {
     return (
       <TableRow>
-        {headers.map(header => {
-          if (header != "options")
+        {headers.filter(filter => filter !== "options").map(header => {
             return <TableCell key={header}>{header}</TableCell>;
         })}
       </TableRow>
@@ -29,22 +28,22 @@ class SimpleTable extends Component {
   createRow(headers, row, reference) {
     return (
       <TableRow key={row.id}>
-        {headers.map(header => {
-          if (header != "options") {
-            let myRow = (
-              <TableCell key={header + row.id}>{row[header]}</TableCell>
-            );
-            if (header === "id") {
-              let url = `/${reference}/${row.id}`;
-              myRow = (
-                <TableCell key={header + row.id}>
-                  <a href={url}>{row[header]}</a>
-                </TableCell>
+        {headers
+          .filter(filter => filter !== "options")
+          .map(header => {
+              let myRow = (
+                <TableCell key={header + row.id}>{row[header]}</TableCell>
               );
-            }
-            return myRow;
-          }
-        })}
+              if (header === "id") {
+                let url = `/${reference}/${row.id}`;
+                myRow = (
+                  <TableCell key={header + row.id}>
+                    <a href={url}>{row[header]}</a>
+                  </TableCell>
+                );
+              }
+              return myRow;
+          })}
       </TableRow>
     );
   }
@@ -68,7 +67,10 @@ class SimpleTable extends Component {
   }
 }
 
-SimpleTable.propTypes = {};
+SimpleTable.propTypes = {
+  data: PropTypes.array.isRequired,
+  headers: PropTypes.array.isRequired
+};
 
 const mapStateToProps = state => ({});
 

@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { setBreadcrumbs } from "../redux/actions/uiActions";
+import { Link } from "react-router-dom";
+
+import Login from "./login";
 
 //Material UI
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 
 import ListSubheader from "@material-ui/core/ListSubheader";
 import List from "@material-ui/core/List";
@@ -16,6 +19,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 const styles = {};
 
 class Home extends Component {
+  async componentDidMount(){
+    this.props.setBreadcrumbs([]);
+  }
   render() {
     const classes = this.props.classes;
     const authenticated = this.props.authenticated;
@@ -35,9 +41,14 @@ class Home extends Component {
             Home
           </Typography>
           {authenticated ? (
-            <Fragment>Logged In</Fragment>
+            <Fragment>
+              Logged In
+              <Typography variant="body1">
+                <Link to="/app">Apps</Link>
+              </Typography>
+            </Fragment>
           ) : (
-            <Fragment>Not Logged In</Fragment>
+            <Login history={this.props.history} />
           )}
         </Grid>
         <List
@@ -63,10 +74,15 @@ class Home extends Component {
   }
 }
 
-Home.propTypes = {};
+Home.propTypes = {
+  authenticated: PropTypes.bool.isRequired,
+  setBreadcrumbs: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
   authenticated: state.user.authenticated
 });
 
-export default connect(mapStateToProps, null)(withStyles(styles)(Home));
+export default connect(mapStateToProps, { setBreadcrumbs })(
+  withStyles(styles)(Home)
+);

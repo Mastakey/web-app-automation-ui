@@ -1,21 +1,16 @@
 //app reducers
 import {
   CREATE_FIELD,
-  READ_FIELD_ALL,
   READ_FIELD_APP,
-  READ_FIELD,
-  UPDATE_FIELD,
-  DELETE_FIELD,
   LOADING_UI,
-  CLEAR_ERRORS,
   SET_ERRORS
 } from "../types";
 import axios from "axios";
 
-export const getFieldsByApp = id => async dispatch => {
+export const getFieldsByObj = id => async dispatch => {
   dispatch({ type: LOADING_UI });
   try {
-    const fields = await axios.get("/app/" + id + "/field");
+    const fields = await axios.get("/obj/" + id + "/field");
     dispatch({ type: READ_FIELD_APP, payload: fields.data });
   } catch (err) {
     console.log(err);
@@ -29,12 +24,17 @@ export const getFieldsByApp = id => async dispatch => {
 export const createField = data => async dispatch => {
   dispatch({ type: LOADING_UI });
   try {
+    let optionsStr = data.options;
+    let optionsJson = {};
+    if (optionsStr !== "") {
+      optionsJson = JSON.parse(optionsStr);
+    }
     const app = await axios.post("/field", {
       name: data.name,
       description: data.description,
       type: data.type,
-      options: data.options,
-      appId: data.appId
+      options: optionsJson,
+      objId: data.objId
     });
     console.log(app);
     dispatch({ type: CREATE_FIELD, payload: app.data });

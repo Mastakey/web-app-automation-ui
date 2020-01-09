@@ -1,9 +1,11 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getApp, deleteApp } from "../redux/actions/appActions";
+import { getApp, deleteApp } from "../../redux/actions/appActions";
+import { setBreadcrumbs } from "../../redux/actions/uiActions";
 import { Link } from "react-router-dom";
-import AppFields from "./appfields";
+
+import AppObjs from "../object/objects";
 import AppCode from "./appcode";
 
 //Material UI
@@ -40,13 +42,18 @@ class AppView extends Component {
   handleEdit() {}
   async componentDidMount() {
     const id = this.props.match.params.id;
-    await this.props.getApp(id);
+    const app = await this.props.getApp(id);
+    if (app && app.data) {
+      console.log(app.data);
+      this.props.setBreadcrumbs([
+        { name: "app", url: "/app" },
+        { name: app.data.name, url: `/app/${app.data.id}` }
+      ]);
+    }
   }
   render() {
     const app = this.props.app.app;
     const classes = this.props.classes;
-
-    console.log(app);
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -67,6 +74,8 @@ class AppView extends Component {
             <Typography variant="h3" component="h3"></Typography>
 
             <Typography variant="body1">{app.description}</Typography>
+            <Typography variant="body1">{app.apiUrl}</Typography>
+            <Typography variant="body1">{app.databaseURL}</Typography>
             <Link to={`/app/edit/${this.props.match.params.id}`}>
               <Fab
                 size="small"
@@ -79,22 +88,25 @@ class AppView extends Component {
             </Link>
           </Paper>
         </Grid>
-        <AppFields appId={this.props.match.params.id} />
+        <AppObjs appId={this.props.match.params.id} />
         <AppCode appId={this.props.match.params.id} />
       </Grid>
     );
   }
 }
 
+//<AppFields appId={this.props.match.params.id} />
+
 AppView.propTypes = {
   getApp: PropTypes.func.isRequired,
+  setBreadcrumbs: PropTypes.func.isRequired,
   app: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  app: state.app,
+  app: state.app
 });
 
-export default connect(mapStateToProps, { getApp, deleteApp })(
+export default connect(mapStateToProps, { getApp, deleteApp, setBreadcrumbs })(
   withStyles(styles)(AppView)
 );

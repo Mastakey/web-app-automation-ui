@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -12,14 +12,12 @@ import Button from "@material-ui/core/Button";
 
 const styles = {};
 
-class CreateField extends Component {
+class CreateApp extends Component {
   constructor() {
     super();
     this.state = {
       name: "",
-      description: "",
-      type: "",
-      options: {}
+      description: ""
     };
   }
 
@@ -29,20 +27,18 @@ class CreateField extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
+    //console.log(this.state);
     const data = {
       name: this.state.name,
-      description: this.state.description,
-      type: this.state.type,
-      appId: this.props.appId,
-      options: this.state.options
+      description: this.state.description
     };
-    await this.props.createField(data);
+    //console.log(this.props);
+    await this.props.createApp(data);
   };
 
   render() {
     const classes = this.props.classes;
     const loading = this.props.loading;
-    const errors = this.props.errors;
     let errorStr = "";
     return (
       <div>
@@ -66,17 +62,6 @@ class CreateField extends Component {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              name="type"
-              label="Type"
-              variant="outlined"
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography>Options</Typography>
-          </Grid>
-          <Grid item xs={12}>
             <Button
               variant="contained"
               color="primary"
@@ -87,13 +72,6 @@ class CreateField extends Component {
               {loading && (
                 <CircularProgress size={30} className={classes.progress} />
               )}
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={this.props.disableCreateForm}
-            >
-              Cancel
             </Button>
           </Grid>
           <Grid item xs={12}>
@@ -107,8 +85,10 @@ class CreateField extends Component {
   }
 }
 
-CreateField.propTypes = {};
+CreateApp.propTypes = {
+  createApp: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, null)(withStyles(styles)(CreateField));
+export default connect(mapStateToProps, null)(withStyles(styles)(CreateApp));

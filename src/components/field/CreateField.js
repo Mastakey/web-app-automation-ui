@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -12,12 +12,14 @@ import Button from "@material-ui/core/Button";
 
 const styles = {};
 
-class CreateApp extends Component {
+class CreateField extends Component {
   constructor() {
     super();
     this.state = {
       name: "",
-      description: ""
+      description: "",
+      type: "",
+      options: {}
     };
   }
 
@@ -27,13 +29,14 @@ class CreateApp extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-    //console.log(this.state);
     const data = {
       name: this.state.name,
-      description: this.state.description
+      description: this.state.description,
+      type: this.state.type,
+      objId: this.props.objId,
+      options: this.state.options
     };
-    //console.log(this.props);
-    await this.props.createApp(data);
+    await this.props.createField(data);
   };
 
   render() {
@@ -63,6 +66,28 @@ class CreateApp extends Component {
             />
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              name="type"
+              label="Type"
+              variant="outlined"
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              name="options"
+              label="Options"
+              variant="outlined"
+              multiline
+              rows="4"
+              defaultValue={`{"values":[
+{"id":"1", "name":"value1"},
+{"id":"2", "name":"value2"}
+]}`}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Button
               variant="contained"
               color="primary"
@@ -74,10 +99,17 @@ class CreateApp extends Component {
                 <CircularProgress size={30} className={classes.progress} />
               )}
             </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.props.disableCreateForm}
+            >
+              Cancel
+            </Button>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="body1" color="secondary">
-              {this.props.errors && errorStr}
+              {errors && errorStr}
             </Typography>
           </Grid>
         </Grid>
@@ -86,8 +118,10 @@ class CreateApp extends Component {
   }
 }
 
-CreateApp.propTypes = {};
+CreateField.propTypes = {
+  createField: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, null)(withStyles(styles)(CreateApp));
+export default connect(mapStateToProps, null)(withStyles(styles)(CreateField));
