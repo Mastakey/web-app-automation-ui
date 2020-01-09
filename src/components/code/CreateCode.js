@@ -36,7 +36,12 @@ class CreateCode extends Component {
       objId: this.props.objId,
       appId: ''
     };
-    await this.props.createCode(data);
+    if (this.state.type === 'service'){
+      await this.props.createCodeService(data);
+    }
+    else {
+      await this.props.createCode(data);
+    }
   };
 
   render() {

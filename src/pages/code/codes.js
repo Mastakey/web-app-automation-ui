@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import CreateCode from "../../components/code/CreateCode";
 import ViewCode from "../../components/code/ViewCode";
-import { createCode, getCodeByObj, deleteCode } from "../../redux/actions/codeActions";
+import {
+  createCode,
+  getCodeByObj,
+  deleteCode,
+  createCodeService
+} from "../../redux/actions/codeActions";
 
 //Material UI
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -91,6 +96,7 @@ class ObjectCode extends Component {
           {this.state.createFormEnabled ? (
             <CreateCode
               createCode={this.props.createCode}
+              createCodeService={this.props.createCodeService}
               objId={this.props.objId}
               disableCreateForm={this.disableCreateForm.bind(this)}
             />
@@ -121,5 +127,6 @@ const mapStateToProps = state => ({ code: state.code });
 export default connect(mapStateToProps, {
   createCode,
   getCodeByObj,
-  deleteCode
+  deleteCode,
+  createCodeService
 })(withStyles(styles)(ObjectCode));

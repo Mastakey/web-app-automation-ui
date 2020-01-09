@@ -40,7 +40,10 @@ export const createCode = data => async dispatch => {
   dispatch({ type: LOADING_UI });
   let codeUrl = '';
   if (data.type === 'functions'){
-    codeUrl = '/functions'
+    codeUrl = '/functions';
+  }
+  else if (data.type === 'service'){
+    codeUrl = '/service';
   }
   try {
     const code = await axios.post(`/code${codeUrl}`, {
@@ -60,6 +63,24 @@ export const createCode = data => async dispatch => {
     });
   }
 };
+
+export const createCodeService = data => async dispatch => {
+    dispatch({ type: LOADING_UI });
+    try {
+      const code = await axios.post(`/code/service`, {
+        appId: "",
+        objId: data.objId
+      });
+      console.log(code);
+      dispatch({ type: CREATE_CODE, payload: code.data });
+    } catch (err) {
+      console.log(err);
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      });
+    }
+}
 
 export const deleteCode = (id) => async dispatch => {
   dispatch({ type: LOADING_UI });
