@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getObj } from "../../redux/actions/objActions";
+import { getObj, deleteObj } from "../../redux/actions/objActions";
 import { getApp } from "../../redux/actions/appActions";
 import { setBreadcrumbs } from "../../redux/actions/uiActions";
 import ObjFields from "../field/fields";
@@ -11,10 +11,22 @@ import ObjectCode from "../code/codes";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import Fab from "@material-ui/core/Fab";
 
-const styles = {};
+//Icons
+import DeleteIcon from "@material-ui/icons/Delete";
+
+const styles = {
+  fabDelete: {
+    float: "right"
+  }
+};
 
 class ObjectView extends Component {
+  handleDelete() {
+    //console.log(this.props.data);
+    this.props.deleteObj(this.props.match.params.id, this.props.history);
+  }
   async componentDidMount() {
     const id = this.props.match.params.id;
     const obj = await this.props.getObj(id);
@@ -27,6 +39,7 @@ class ObjectView extends Component {
   }
   render() {
     const obj = this.props.obj.object;
+    const classes = this.props.classes;
     console.log(obj);
     return (
       <Grid container spacing={2}>
@@ -34,6 +47,14 @@ class ObjectView extends Component {
           <Typography variant="h3" component="h3">
             {obj.name}
           </Typography>
+          <Fab
+            size="small"
+            color="secondary"
+            onClick={this.handleDelete.bind(this)}
+            className={classes.fabDelete}
+          >
+            <DeleteIcon />
+          </Fab>
         </Grid>
         <ObjFields objId={this.props.match.params.id} />
         <ObjectCode objId={this.props.match.params.id} />
@@ -45,6 +66,7 @@ class ObjectView extends Component {
 ObjectView.propTypes = {
   getObj: PropTypes.func.isRequired,
   getApp: PropTypes.func.isRequired,
+  deleteObj: PropTypes.func.isRequired,
   setBreadcrumbs: PropTypes.func.isRequired,
   obj: PropTypes.object.isRequired
 };
@@ -54,6 +76,9 @@ const mapStateToProps = state => ({
   UI: state.UI
 });
 
-export default connect(mapStateToProps, { getObj, getApp, setBreadcrumbs })(
-  withStyles(styles)(ObjectView)
-);
+export default connect(mapStateToProps, {
+  getObj,
+  getApp,
+  setBreadcrumbs,
+  deleteObj
+})(withStyles(styles)(ObjectView));

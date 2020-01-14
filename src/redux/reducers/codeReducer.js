@@ -3,7 +3,8 @@ import {
   CREATE_CODE,
   READ_CODE_APP,
   READ_CODE_OBJ,
-  DELETE_CODE
+  DELETE_CODE,
+  CREATE_CODES
 } from "../types";
 
 const initialState = {
@@ -30,6 +31,12 @@ export default function(state = initialState, action) {
         ...state,
         loading: false,
         codes: [...state.codes, action.payload]
+      };
+    case CREATE_CODES:
+      return {
+        ...state,
+        loading: false,
+        codes: [...state.codes].concat(action.payload)
       };
     case DELETE_CODE:
       //payload will have the id of deleted item

@@ -4,7 +4,8 @@ import {
   READ_CODE_APP,
   LOADING_UI,
   SET_ERRORS,
-  DELETE_CODE
+  DELETE_CODE,
+  CREATE_CODES
 } from "../types";
 import axios from "axios";
 
@@ -72,7 +73,7 @@ export const createCodeService = data => async dispatch => {
         objId: data.objId
       });
       console.log(code);
-      dispatch({ type: CREATE_CODE, payload: code.data });
+      dispatch({ type: CREATE_CODES, payload: code.data });
     } catch (err) {
       console.log(err);
       dispatch({
@@ -81,6 +82,41 @@ export const createCodeService = data => async dispatch => {
       });
     }
 }
+
+export const createCodeController = data => async dispatch => {
+    dispatch({ type: LOADING_UI });
+    try {
+      const code = await axios.post(`/code/controller`, {
+        appId: "",
+        objId: data.objId
+      });
+      console.log(code);
+      dispatch({ type: CREATE_CODES, payload: code.data });
+    } catch (err) {
+      console.log(err);
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      });
+    }
+}
+
+export const createCodeRoute = data => async dispatch => {
+  dispatch({ type: LOADING_UI });
+  try {
+    const code = await axios.post(`/code/route`, {
+      appId: data.appId
+    });
+    console.log(code);
+    dispatch({ type: CREATE_CODE, payload: code.data });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: SET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
 
 export const deleteCode = (id) => async dispatch => {
   dispatch({ type: LOADING_UI });

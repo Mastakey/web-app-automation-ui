@@ -36,7 +36,6 @@ const styles = {
 
 class AppView extends Component {
   handleDelete() {
-    //console.log(this.props.data);
     this.props.deleteApp(this.props.match.params.id, this.props.history);
   }
   handleEdit() {}

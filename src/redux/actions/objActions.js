@@ -4,7 +4,8 @@ import {
   READ_OBJECT_APP,
   READ_OBJECT,
   LOADING_UI,
-  SET_ERRORS
+  SET_ERRORS,
+  DELETE_OBJECT
 } from "../types";
 import axios from "axios";
 
@@ -48,6 +49,22 @@ export const createObject = data => async dispatch => {
     });
     console.log(app);
     dispatch({ type: CREATE_OBJECT, payload: app.data });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: SET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
+
+export const deleteObj = (id, history) => async dispatch => {
+  dispatch({ type: LOADING_UI });
+  try {
+    const obj = await axios.delete("/obj/" + id);
+    console.log(obj);
+    dispatch({ type: DELETE_OBJECT, payload: obj.data });
+    history.push("/app");
   } catch (err) {
     console.log(err);
     dispatch({

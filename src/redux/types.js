@@ -23,6 +23,7 @@ export const DELETE_FIELD = "DELETE_FIELD";
 
 //code reducers
 export const CREATE_CODE = "CREATE_CODE";
+export const CREATE_CODES = "CREATE_CODES";
 export const READ_CODE_APP = "READ_CODE_APP";
 export const READ_CODE_OBJ = "READ_CODE_OBJ";
 export const DELETE_CODE = "DELETE_CODE";

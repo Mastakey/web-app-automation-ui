@@ -41,14 +41,12 @@ class AppEdit extends Component {
 
   handleSave = async event => {
     event.preventDefault();
-    //console.log(this.state);
     const data = {
       name: this.state.name,
       description: this.state.description,
       apiUrl: this.state.apiUrl,
       databaseURL: this.state.databaseURL
     };
-    //console.log(this.props);
     await this.props.editApp(
       this.props.match.params.id,
       data,

@@ -34,12 +34,15 @@ class CreateCode extends Component {
       description: this.state.description,
       type: this.state.type,
       objId: this.props.objId,
-      appId: ''
+      appId: this.props.appId
     };
-    if (this.state.type === 'service'){
+    if (this.state.type === "service") {
       await this.props.createCodeService(data);
-    }
-    else {
+    } else if (this.state.type === "controller") {
+      await this.props.createCodeController(data);
+    } else if (this.state.type === "route") {
+      await this.props.createCodeRoute(data);
+    } else {
       await this.props.createCode(data);
     }
   };

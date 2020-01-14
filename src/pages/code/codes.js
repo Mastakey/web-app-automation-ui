@@ -7,7 +7,8 @@ import {
   createCode,
   getCodeByObj,
   deleteCode,
-  createCodeService
+  createCodeService,
+  createCodeController
 } from "../../redux/actions/codeActions";
 
 //Material UI
@@ -70,7 +71,7 @@ class ObjectCode extends Component {
     console.log(codes);
     return (
       <Grid item xs={12}>
-        <Typography variant="h4">Code</Typography>
+        <Typography variant="h4">Backend Code</Typography>
         <Paper className={classes.paper}>
           {codes.map(code => {
             return (
@@ -97,7 +98,9 @@ class ObjectCode extends Component {
             <CreateCode
               createCode={this.props.createCode}
               createCodeService={this.props.createCodeService}
+              createCodeController={this.props.createCodeController}
               objId={this.props.objId}
+              appId={''}
               disableCreateForm={this.disableCreateForm.bind(this)}
             />
           ) : (
@@ -118,6 +121,8 @@ class ObjectCode extends Component {
 ObjectCode.propTypes = {
   code: PropTypes.object.isRequired,
   createCode: PropTypes.func.isRequired,
+  createCodeService: PropTypes.func.isRequired,
+  createCodeController: PropTypes.func.isRequired,
   getCodeByObj: PropTypes.func.isRequired,
   deleteCode: PropTypes.func.isRequired
 };
@@ -128,5 +133,6 @@ export default connect(mapStateToProps, {
   createCode,
   getCodeByObj,
   deleteCode,
-  createCodeService
+  createCodeService,
+  createCodeController
 })(withStyles(styles)(ObjectCode));
