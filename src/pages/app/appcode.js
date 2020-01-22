@@ -1,10 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   getCodeByApp,
   deleteCode,
-  createCodeRoute
+  createCodeRoute,
+  deleteAllCode,
+  createAllCodeUI
 } from "../../redux/actions/codeActions";
 import ViewCode from "../../components/code/ViewCode";
 import CreateCode from "../../components/code/CreateCode";
@@ -23,13 +25,21 @@ import Fab from "@material-ui/core/Fab";
 
 //Materical Icons
 import AddIcon from "@material-ui/icons/Add";
+import CodeIcon from "@material-ui/icons/Code";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import DeleteIcon from "@material-ui/icons/Delete";
+
+//Zip
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 const styles = {
   paper: {
     padding: "20px"
   },
   fab: {
-    marginTop: "10px"
+    marginTop: "10px",
+    marginRight: "10px"
   },
   fabRight: {
     marginTop: "10px",
@@ -47,6 +57,10 @@ class AppCode extends Component {
   async deleteCode(id) {
     await this.props.deleteCode(id);
   }
+  async handleDeleteCodes() {
+    const id = this.props.appId;
+    await this.props.deleteAllCode(id);
+  }
   disableCreateForm() {
     this.setState({
       ...this.state,
@@ -58,6 +72,29 @@ class AppCode extends Component {
       ...this.state,
       createFormEnabled: true
     });
+  }
+  handleDownload() {
+    var zip = new JSZip();
+    const appName = this.props.app.app.name;
+    const codes = this.props.code.codes;
+    console.log(codes);
+    codes.forEach(code => {
+      zip.file(`${code.folder}/${code.name}`, code.code);
+    });
+    zip.generateAsync({ type: "blob" }).then(function(content) {
+      saveAs(content, `${appName}.zip`);
+    });
+    //folders
+    // zip.file("Hello.txt", "Hello World\n");
+    // zip.generateAsync({ type: "blob" }).then(function(content) {
+    //   // see FileSaver.js
+    //   saveAs(content, `${appName}.zip`);
+    // });
+  }
+  async handleCodeField() {
+    const id = this.props.appId;
+    await this.props.createAllCodeUI(id);
+    await this.props.getCodeByApp(id);
   }
   async componentDidMount() {
     const id = this.props.appId;
@@ -103,10 +140,21 @@ class AppCode extends Component {
               disableCreateForm={this.disableCreateForm.bind(this)}
             />
           ) : (
-            <Fab size="small" color="primary" className={classes.fab}>
-              <AddIcon onClick={this.handleAddField.bind(this)} />
-            </Fab>
+            <Fragment>
+              <Fab size="small" color="primary" className={classes.fab}>
+                <AddIcon onClick={this.handleAddField.bind(this)} />
+              </Fab>
+              <Fab size="small" color="primary" className={classes.fab}>
+                <CodeIcon onClick={this.handleCodeField.bind(this)} />
+              </Fab>
+              <Fab size="small" color="secondary" className={classes.fab}>
+                <DeleteIcon onClick={this.handleDeleteCodes.bind(this)} />
+              </Fab>
+            </Fragment>
           )}
+          <Fab size="small" color="primary" className={classes.fabRight}>
+            <CloudDownloadIcon onClick={this.handleDownload.bind(this)} />
+          </Fab>
         </Paper>
       </Grid>
     );
@@ -121,11 +169,14 @@ AppCode.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  code: state.code
+  code: state.code,
+  app: state.app
 });
 
 export default connect(mapStateToProps, {
   getCodeByApp,
   deleteCode,
-  createCodeRoute
+  createCodeRoute,
+  deleteAllCode,
+  createAllCodeUI
 })(withStyles(styles)(AppCode));

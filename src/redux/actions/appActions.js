@@ -43,7 +43,7 @@ export const createApp = (data) => async dispatch => {
     const app = await axios.post("/app", {
       name: data.name,
       description: data.description,
-      apIUrl: '',
+      apiUrl: '',
       databaseURL: ''
     });
     console.log(app);

@@ -1,9 +1,11 @@
 //app reducers
 import {
   CREATE_CODE,
+  CREATE_CODES_UI,
   READ_CODE_APP,
   READ_CODE_OBJ,
   DELETE_CODE,
+  DELETE_CODES,
   CREATE_CODES
 } from "../types";
 
@@ -45,6 +47,18 @@ export default function(state = initialState, action) {
         ...state,
         loading: false,
         codes: state.codes.filter(code => code.id !== id)
+      };
+    case DELETE_CODES:
+      return {
+        ...state,
+        loading: false,
+        codes: []
+      };
+    case CREATE_CODES_UI:
+      return {
+        ...state,
+        loading: false,
+        codes: []
       };
     default:
       return state;
